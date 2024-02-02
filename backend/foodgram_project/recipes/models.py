@@ -88,10 +88,14 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=32,
+                            unique=True,
                             verbose_name='тег')
-    color = ColorField(default='#FF0000')
-    slug = models.SlugField(unique=True,
-                            verbose_name='slug')
+    color = models.CharField(
+        max_length=7,
+        unique=True,
+        default='#FF0000'
+    )
+    slug = models.SlugField(unique=True, verbose_name='slug')
 
     def __str__(self):
         return self.name
@@ -106,8 +110,7 @@ class Recipe(models.Model):
     image = models.ImageField(
         'изображение',
         upload_to='recipe_images/',
-        null=True,
-        blank=True,
+        default='default.jpg'
     )
     text = models.TextField(
         verbose_name='описание рецепта',

@@ -1,3 +1,5 @@
+import base64
+from django.core.files.base import ContentFile
 from rest_framework import serializers
 # from django.core.validators import RegexValidator
 # from django.db.models import Avg
@@ -71,11 +73,27 @@ from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
     # )
 
 
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        # Если полученный объект строка, и эта строка 
+        # начинается с 'data:image'...
+        if isinstance(data, str) and data.startswith('data:image'):
+            # ...начинаем декодировать изображение из base64.
+            # Сначала нужно разделить строку на части.
+            format, imgstr = data.split(';base64,')
+            # И извлечь расширение файла.
+            ext = format.split('/')[-1]
+            # Затем декодировать сами данные и поместить результат в файл,
+            # которому дать название по шаблону.
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+        return super().to_internal_value(data)
+
+
 class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ('name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug')
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -98,11 +116,16 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientRecipe
-        fields = ('id', 'amount', 'name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    ingredients = IngredientRecipeSerializer(many=True)
+    ingredients = IngredientRecipeSerializer(many=True, required=False)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True,
+    )
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
@@ -110,40 +133,28 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         print(validated_data)
-        if 'ingredients' not in self.initial_data:
-            recipe = Recipe.objects.create(**validated_data)
-            return recipe
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        print(tags)
+        recipe = Recipe.objects.create(**validated_data)
+        recipe.tags.set(tags)
+        IngredientRecipe.objects.bulk_create(
+        [IngredientRecipe(
+            ingredient=Ingredient.objects.get(id=ingredient['id']),
+            recipe=recipe,
+            amount=ingredient['amount']
+        ) for ingredient in ingredients]
+        )
+        return recipe
 
-        else:
-            print(validated_data)
-            ingredients = validated_data.pop('ingredients')
-            print('1')
-            ingredient1=Ingredient.objects.get(id=ingredients[0]['id'])
-            print(ingredient1.id)
-            recipe = Recipe.objects.create(**validated_data)
-            IngredientRecipe.objects.bulk_create(
-            [IngredientRecipe(
-                ingredient=Ingredient.objects.get(id=ingredient['id']),
-                recipe=recipe,
-                amount=ingredient['amount']
-            ) for ingredient in ingredients]
-            )
-            print('2')
-            # print(ingredients[0])
-            # for ingredient in ingredients:
-            #     print(ingredient)
-            # for ingredient in ingredients:
-            #     current_ingredient, status = Ingredient.objects.get_or_create(
-            #         **ingredient)
-            #     IngredientRecipe.objects.create(
-            #         ingredient=current_ingredient, recipe=recipe)
-            return recipe
-    
     def to_representation(self, obj):
         self.fields.pop('ingredients')
         representation = super().to_representation(obj)
         representation['ingredients'] = IngredientRecipeSerializer(
             IngredientRecipe.objects.filter(recipe=obj).all(), many=True
+        ).data
+        representation['tags'] = TagSerializer(
+            obj.tags, many=True
         ).data
         return representation
 
