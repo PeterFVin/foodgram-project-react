@@ -4,7 +4,7 @@ from rest_framework import serializers
 # from django.core.validators import RegexValidator
 # from django.db.models import Avg
 
-from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
+from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, TagRecipe
 # from api.validators import validate_name, validate_rating
 
 
@@ -129,7 +129,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('name', 'image', 'text', 'ingredients', 'tags', 'cooking_time')
+        fields = ('name', 'image', 'author', 'text', 'ingredients', 'tags', 'cooking_time')
 
     def create(self, validated_data):
         print(validated_data)
@@ -147,8 +147,26 @@ class RecipeSerializer(serializers.ModelSerializer):
         )
         return recipe
 
+    # def update(self, instance, validated_data):
+    #     if 'ingredients' in self.validated_data:
+    #         ingredients_data = validated_data.pop('ingredients')
+    #         amount_set = IngredientRecipe.objects.filter(
+    #             recipe__id=instance.id)
+    #         amount_set.delete()
+    #         bulk_create_data = (
+    #             IngredientRecipe(
+    #                 recipe=Recipe.objects.get(id=ingredient_data['recipe_id']),
+    #                 ingredient=ingredient_data['ingredient'],
+    #                 amount=ingredient_data['amount'])
+    #             for ingredient_data in ingredients_data
+    #         )
+    #         IngredientRecipe.objects.bulk_create(bulk_create_data)
+
+    #     return super().update(instance, validated_data)
+    
     def to_representation(self, obj):
-        self.fields.pop('ingredients')
+        if 'ingredients' in self.fields:
+            self.fields.pop('ingredients')
         representation = super().to_representation(obj)
         representation['ingredients'] = IngredientRecipeSerializer(
             IngredientRecipe.objects.filter(recipe=obj).all(), many=True

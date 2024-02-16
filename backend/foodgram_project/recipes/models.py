@@ -1,79 +1,12 @@
-# from django.contrib.auth.models import AbstractUser
 # from django.core.validators import RegexValidator
 # from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from colorfield.fields import ColorField
+from users.models import User
 
 
 # NUM_CHARS_TO_PRINT = 15
-
-
-# class User(AbstractUser):
-
-# #     class Rolechoices(models.TextChoices):
-# #         USER = "user"
-# #         MODERATOR = "moderator"
-# #         ADMIN = "admin"
-
-#     username = models.CharField(
-#         max_length=150,
-#         unique=True,
-#         blank=False,
-#         verbose_name='имя пользователя',
-#     #     validators=[
-#     #         RegexValidator(
-#     #             regex=r'^[\w.@+-]+$',
-#     #             message='«Введите допустимое значение».'),
-#     #     ]
-#     )
-#     email = models.EmailField(unique=True,
-#                               max_length=100,
-#                               blank=False,
-#                               verbose_name='e-mail')
-#     first_name = models.CharField(max_length=30,
-#                                   blank=True,
-#                                   verbose_name='имя')
-#     last_name = models.CharField(max_length=30,
-#                                  blank=True,
-#                                  verbose_name='фамилия')
-# #     role = models.CharField(
-# #         max_length=10,
-#         choices=Rolechoices.choices,
-#         default=Rolechoices.USER,
-#         verbose_name='пользовательские роли',
-#     )
-#     confirmation_code = models.CharField(
-#         blank=True,
-#         max_length=255,
-#         verbose_name='код подтверждения',
-#     )
-
-#     class Meta:
-#         ordering = ['username']
-#         indexes = [
-#             models.Index(fields=['username'])
-#         ]
-
-#     def __str__(self):
-#         return self.username
-
-#     @property
-#     def is_admin(self):
-#         return (
-#             self.role == User.Rolechoices.ADMIN
-#             or self.is_superuser
-#             or self.is_staff
-#         )
-
-#     @property
-#     def is_moderator(self):
-#         return self.role == User.Rolechoices.MODERATOR
-
-#     @property
-#     def is_user(self):
-#         return self.role == User.Rolechoices.USER
 
 
 class Ingredient(models.Model):
@@ -103,31 +36,36 @@ class Tag(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=100,
+                            blank=False,
                             verbose_name='рецепт')
-    # author = models.ForeignKey(User,
-    #                            on_delete=models.CASCADE,
-    #                            verbose_name='создатель рецепта',)
+    author = models.ForeignKey(User,
+                               on_delete=models.CASCADE,
+                               verbose_name='создатель рецепта',)
     image = models.ImageField(
         'изображение',
         upload_to='recipe_images/',
-        default='default.jpg'
+        default='default.jpg',
+        blank=False,
     )
     text = models.TextField(
+        blank=False,
         verbose_name='описание рецепта',
     )
-    # Преустановленный список, при выборе из него указывается кол-во и ед.изм.
-    # ChoiceField
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipe',
+        blank=False,
         related_name='recipes',
     )
     tags = models.ManyToManyField(
         Tag,
         through='TagRecipe',
+        blank=False,
         related_name='recipes',
     )
-    cooking_time = models.IntegerField(verbose_name='время приготовления')
+    cooking_time = models.IntegerField(
+        blank=False,
+        verbose_name='время приготовления')
 
     class Meta:
         ordering = ('name',)
