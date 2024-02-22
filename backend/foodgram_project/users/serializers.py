@@ -3,14 +3,27 @@ from djoser import serializers
 from recipes.models import User
 
 
-class UserSerializer(serializers.UserSerializer):
+class CustomUserCreateSerializer(serializers.UserCreateSerializer):
+    """При создании пользователя."""
 
     class Meta:
         model = User
-        fields = ('email', 'id', 'first_name', 'last_name', 'username')
+        fields = (
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password",
+        )
+
+
+class UserSerializer(serializers.UserSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'id', 'first_name', 'last_name', 'username', 'password')
 
     def create(self, validated_data):
-        print(validated_data)
         user = User(
             email=validated_data['email'],
             username=validated_data['username'],
@@ -20,3 +33,8 @@ class UserSerializer(serializers.UserSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    def to_representation(self, obj):
+        representation = super().to_representation(obj)
+        representation.pop('password')
+        return representation

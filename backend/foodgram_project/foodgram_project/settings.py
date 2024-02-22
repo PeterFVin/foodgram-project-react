@@ -133,7 +133,17 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-#     'AUTH_HEADER_TYPES': ('Bearer',),
+
+# DJOSER = {
+#     'LOGIN_FIELD': 'email',
+#     'HIDE_USERS': False,
+#     'SERIALIZERS': {
+#         'user_create': 'users.serializers.CustomUserCreateSerializer',
+#         'user': 'users.serializers.UserSerializer',
+#         'current_user': 'users.serializers.UserSerializer',
+#     },
+#     'PERMISSIONS': {
+#         'user': ['rest_framework.permissions.IsAuthenticated'],
+#         'user_list': ['rest_framework.permissions.AllowAny'],
+#     },
 # }

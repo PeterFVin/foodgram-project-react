@@ -163,6 +163,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     # pagination_class = LimitOffsetPagination
     queryset = Recipe.objects.all()
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(author=self.request.user)
+
     #  ВМЕСТО ПРОСТОГО QUERYSET
     # def get_queryset(self):
     #     title = get_object_or_404(Title, id=self.kwargs.get("title_id"))

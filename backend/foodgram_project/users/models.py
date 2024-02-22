@@ -49,6 +49,12 @@ class User(AbstractUser):
 #     )
 
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = [
+        'username',
+        'password'
+    ]
+
     class Meta:
         ordering = ['username']
         verbose_name = 'пользователь'
