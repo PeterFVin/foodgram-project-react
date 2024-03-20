@@ -67,6 +67,30 @@ class User(AbstractUser):
         return self.username
 
 
+class Subscribe(models.Model):
+    user = models.ForeignKey(
+        User,
+        related_name='subscriber',
+        verbose_name="подписчик",
+        on_delete=models.CASCADE,
+    )
+    author = models.ForeignKey(
+        User,
+        related_name='author',
+        verbose_name="автор",
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        constraints = [
+           models.UniqueConstraint(fields=['user', 'author'], name='unique_subscription')
+        ]
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+
+    def __str__(self):
+        return f'{self.user} подписался на {self.author}'
+
 #     @property
 #     def is_admin(self):
 #         return (

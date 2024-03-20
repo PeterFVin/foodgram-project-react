@@ -1,10 +1,9 @@
-import base64
-from django.core.files.base import ContentFile
 from rest_framework import serializers
 # from django.core.validators import RegexValidator
 # from django.db.models import Avg
 
-from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag, TagRecipe
+from api.utils import Base64ImageField
+from recipes.models import Ingredient, IngredientRecipe, Recipe, Tag
 from users.serializers import UserSerializer
 # from api.validators import validate_name, validate_rating
 
@@ -74,21 +73,6 @@ from users.serializers import UserSerializer
     # )
 
 
-class Base64ImageField(serializers.ImageField):
-    def to_internal_value(self, data):
-        # Если полученный объект строка, и эта строка 
-        # начинается с 'data:image'...
-        if isinstance(data, str) and data.startswith('data:image'):
-            # ...начинаем декодировать изображение из base64.
-            # Сначала нужно разделить строку на части.
-            format, imgstr = data.split(';base64,')
-            # И извлечь расширение файла.
-            ext = format.split('/')[-1]
-            # Затем декодировать сами данные и поместить результат в файл,
-            # которому дать название по шаблону.
-            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
-        return super().to_internal_value(data)
-
 
 class TagSerializer(serializers.ModelSerializer):
 
@@ -128,11 +112,22 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
+    is_favorited = serializers.SerializerMethodField(read_only=True)
+    is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'author', 'text', 'ingredients', 'tags', 'cooking_time')
-        read_only_fields = ('author',)
+        fields = ('id',
+                  'name',
+                  'image',
+                  'author',
+                  'text',
+                  'ingredients',
+                  'tags',
+                  'cooking_time',
+                  'is_favorited',
+                  'is_in_shopping_cart')
+        read_only_fields = ('author', 'is_favorited', 'is_in_shopping_cart')
 
     # def current_user(request):
     #     serializer = UserSerializer(request.user)
@@ -140,11 +135,21 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     # def get_author(self, obj):
     #     return dt.datetime.now().year - obj.birth_year
+        
+    def get_is_favorited(self, obj):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        return obj.favorite.filter(user=user).exists()
+    
+    def get_is_in_shopping_cart(self, obj):
+        user = self.context['request'].user
+        if user.is_anonymous:
+            return False
+        return obj.shopping_cart.filter(user=user).exists()
 
     def create(self, validated_data):
-        print(validated_data)
         ingredients = validated_data.pop('ingredients')
-        print(ingredients)
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
@@ -156,53 +161,34 @@ class RecipeSerializer(serializers.ModelSerializer):
         ) for ingredient in ingredients]
         )
         return recipe
-    
-    # def update(self, instance, validated_data):
-    #     instance.name = validated_data.get('name', instance.name)
-    #     instance.color = validated_data.get('color', instance.color)
-    #     instance.birth_year = validated_data.get(
-    #         'birth_year', instance.birth_year
-    #         )
-    #     instance.image = validated_data.get('image', instance.image)
-    #     if 'achievements' in validated_data:
-    #         achievements_data = validated_data.pop('achievements')
-    #         lst = []
-    #         for achievement in achievements_data:
-    #             current_achievement, status = Achievement.objects.get_or_create(
-    #                 **achievement
-    #                 )
-    #             lst.append(current_achievement)
-    #         instance.achievements.set(lst)
-
-    #     instance.save()
-    #     return instance 
 
     def update(self, instance, validated_data):
-        if 'ingredients' in self.validated_data:
-            print(validated_data)
-            ingredients_data = validated_data.pop('ingredients')
-            amount_set = IngredientRecipe.objects.filter(
-                recipe__id=instance.id)
-            print(amount_set)
-            amount_set.delete()
-            print(ingredients_data)
-            # IngredientRecipe.objects.bulk_create(
-            # [IngredientRecipe(
-            #     ingredient=Ingredient.objects.get(id=ingredient['id']),
-            #     recipe=recipe,
-            #     amount=ingredient['amount']
-            # ) for ingredient in ingredients_data]
-            # )
-            bulk_create_data = (
-                IngredientRecipe(
-                    recipe=Recipe.objects.get(id=ingredient_data['id']),
-                    ingredient=ingredient_data['ingredient'],
-                    amount=ingredient_data['amount'])
-                for ingredient_data in ingredients_data
+        print(validated_data)
+        ingredients_data = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        instance.name = validated_data.get('name', instance.name)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get(
+            'cooking_time', instance.cooking_time
             )
-            IngredientRecipe.objects.bulk_create(bulk_create_data)
-
-        return super().update(instance, validated_data)
+        instance.image = validated_data.get('image', instance.image)
+        instance.tags.set(tags)
+        
+        
+        amount_set = IngredientRecipe.objects.filter(
+                recipe__id=instance.id)
+        print(instance.id)
+        amount_set.delete()
+        
+        IngredientRecipe.objects.bulk_create(
+        [IngredientRecipe(
+            ingredient=Ingredient.objects.get(id=ingredient_data['id']),
+            recipe=instance,
+            amount=ingredient_data['amount']
+        ) for ingredient_data in ingredients_data]
+        )
+        instance.save()
+        return instance
     
     def to_representation(self, obj):
         if 'ingredients' in self.fields:
@@ -215,6 +201,8 @@ class RecipeSerializer(serializers.ModelSerializer):
             obj.tags, many=True
         ).data
         return representation
+
+
 
 
 
