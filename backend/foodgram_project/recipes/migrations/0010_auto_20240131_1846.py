@@ -13,11 +13,15 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='tag',
             name='color',
-            field=models.CharField(default='#FF0000', max_length=7, unique=True),
+            field=models.CharField(
+                default='#FF0000', max_length=7, unique=True
+            ),
         ),
         migrations.AlterField(
             model_name='tag',
             name='name',
-            field=models.CharField(max_length=32, unique=True, verbose_name='тег'),
+            field=models.CharField(
+                max_length=32, unique=True, verbose_name='тег'
+            ),
         ),
     ]

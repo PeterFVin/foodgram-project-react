@@ -1,41 +1,61 @@
+from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer, UserSerializer
-
 from rest_framework.fields import SerializerMethodField
 from rest_framework import serializers
 
 from api.utils import Base64ImageField
 from recipes.models import Recipe
-from users.models import Subscribe, User
+from users.models import Subscribe
+
+User = get_user_model()
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
-    """При создании пользователя."""
 
     class Meta:
         model = User
         fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "email",
-            "password",
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
         )
-
-
-class UserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = User
-        fields = ('email', 'id', 'first_name', 'last_name', 'username', 'password', 'is_subscribed')
 
     def create(self, validated_data):
         user = User(
             email=validated_data['email'],
             username=validated_data['username'],
             first_name=validated_data['first_name'],
-            last_name=validated_data['last_name']
+            last_name=validated_data['last_name'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
+
+class UserSerializer(UserSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'first_name',
+            'last_name',
+            'username',
+            'password',
+            'is_subscribed',
+        )
+
+    def create(self, validated_data):
+        user = User(
+            email=validated_data['email'],
+            username=validated_data['username'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -43,9 +63,10 @@ class UserSerializer(UserSerializer):
 
     def to_representation(self, obj):
         representation = super().to_representation(obj)
+        print(representation)
         representation.pop('password')
         return representation
-    
+
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
         if user.is_anonymous:
@@ -72,13 +93,20 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscribe
-        fields = ('id', 'email', 'username', 'first_name', 'last_name',
-                  'is_subscribed', 'recipes', 'recipes_count')
+        fields = (
+            'id',
+            'email',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes',
+            'recipes_count',
+        )
 
     def get_is_subscribed(self, obj):
         return Subscribe.objects.filter(
-            user=obj.user,
-            author=obj.author
+            user=obj.user, author=obj.author,
         ).exists()
 
     def get_recipes(self, obj):
@@ -86,7 +114,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         limit = request.GET.get('recipes_limit')
         queryset = Recipe.objects.filter(author=obj.author)
         if limit:
-            queryset = queryset[:int(limit)]
+            queryset = queryset[: int(limit)]
         return RecipeSubscribeSerializer(queryset, many=True).data
 
     def get_recipes_count(self, obj):

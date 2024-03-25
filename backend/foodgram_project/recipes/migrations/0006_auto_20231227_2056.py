@@ -14,11 +14,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ingredientrecipe',
             name='amount',
-            field=models.IntegerField(default=1, validators=[django.core.validators.MinValueValidator(1, message='должен быть хотя бы один ингредиент!')], verbose_name='количество'),
+            field=models.IntegerField(
+                default=1,
+                validators=[
+                    django.core.validators.MinValueValidator(
+                        1, message='должен быть хотя бы один ингредиент!'
+                    )
+                ],
+                verbose_name='количество',
+            ),
             preserve_default=False,
         ),
         migrations.AddConstraint(
             model_name='ingredientrecipe',
-            constraint=models.UniqueConstraint(fields=('recipe_id', 'ingredient_id'), name='unique_recipe_ingredient'),
+            constraint=models.UniqueConstraint(
+                fields=('recipe_id', 'ingredient_id'),
+                name='unique_recipe_ingredient',
+            ),
         ),
     ]

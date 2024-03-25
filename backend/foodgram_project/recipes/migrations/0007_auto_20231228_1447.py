@@ -14,16 +14,29 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='ingredientrecipe',
             name='recipe_id',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='ingredient_list', to='recipes.recipe', verbose_name='recipe_id'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name='ingredient_list',
+                to='recipes.recipe',
+                verbose_name='recipe_id',
+            ),
         ),
         migrations.AlterField(
             model_name='recipe',
             name='ingredients',
-            field=models.ManyToManyField(related_name='recipes', through='recipes.IngredientRecipe', to='recipes.Ingredient'),
+            field=models.ManyToManyField(
+                related_name='recipes',
+                through='recipes.IngredientRecipe',
+                to='recipes.Ingredient',
+            ),
         ),
         migrations.AlterField(
             model_name='recipe',
             name='tags',
-            field=models.ManyToManyField(related_name='recipes', through='recipes.TagRecipe', to='recipes.Tag'),
+            field=models.ManyToManyField(
+                related_name='recipes',
+                through='recipes.TagRecipe',
+                to='recipes.Tag',
+            ),
         ),
     ]

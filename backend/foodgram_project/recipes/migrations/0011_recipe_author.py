@@ -16,7 +16,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='recipe',
             name='author',
-            field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, to='users.user', verbose_name='создатель рецепта'),
+            field=models.ForeignKey(
+                default=2,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='users.user',
+                verbose_name='создатель рецепта',
+            ),
             preserve_default=False,
         ),
     ]

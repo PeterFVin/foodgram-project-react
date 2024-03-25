@@ -15,9 +15,33 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Subscribe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='author', to=settings.AUTH_USER_MODEL, verbose_name='автор')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subscriber', to=settings.AUTH_USER_MODEL, verbose_name='подписчик')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'author',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='author',
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='автор',
+                    ),
+                ),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='subscriber',
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name='подписчик',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'подписка',
@@ -26,6 +50,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddConstraint(
             model_name='subscribe',
-            constraint=models.UniqueConstraint(fields=('user', 'author'), name='unique_subscription'),
+            constraint=models.UniqueConstraint(
+                fields=('user', 'author'), name='unique_subscription'
+            ),
         ),
     ]

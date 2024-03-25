@@ -26,6 +26,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='tag',
             name='color',
-            field=colorfield.fields.ColorField(default='#FF0000', image_field=None, max_length=25, samples=None),
+            field=colorfield.fields.ColorField(
+                default='#FF0000',
+                image_field=None,
+                max_length=25,
+                samples=None,
+            ),
         ),
     ]

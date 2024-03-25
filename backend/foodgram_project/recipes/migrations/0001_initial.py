@@ -8,28 +8,70 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='Ingredient',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=32, verbose_name='название')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(max_length=32, verbose_name='название'),
+                ),
                 ('quantity', models.IntegerField(verbose_name='количество')),
-                ('measurement_unit', models.CharField(max_length=32, verbose_name='единица измерения')),
+                (
+                    'measurement_unit',
+                    models.CharField(
+                        max_length=32, verbose_name='единица измерения'
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
             name='Recipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='рецепт')),
-                ('image', models.ImageField(upload_to='', verbose_name='картинка')),
-                ('description', models.TextField(verbose_name='описание рецепта')),
-                ('time', models.IntegerField(verbose_name='время приготовления')),
-                ('ingredient', models.ManyToManyField(related_name='ingredientss', to='recipes.Ingredient', verbose_name='ингредиенты')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'name',
+                    models.CharField(max_length=100, verbose_name='рецепт'),
+                ),
+                (
+                    'image',
+                    models.ImageField(upload_to='', verbose_name='картинка'),
+                ),
+                (
+                    'description',
+                    models.TextField(verbose_name='описание рецепта'),
+                ),
+                (
+                    'time',
+                    models.IntegerField(verbose_name='время приготовления'),
+                ),
+                (
+                    'ingredient',
+                    models.ManyToManyField(
+                        related_name='ingredientss',
+                        to='recipes.Ingredient',
+                        verbose_name='ингредиенты',
+                    ),
+                ),
             ],
             options={
                 'ordering': ('name',),
@@ -38,7 +80,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('name', models.CharField(max_length=32, verbose_name='тег')),
                 ('slug', models.SlugField(unique=True, verbose_name='slug')),
             ],
@@ -46,9 +96,31 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TagRecipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipe_id', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='recipes.recipe', verbose_name='recipe_id')),
-                ('tag_id', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='recipes.tag', verbose_name='tag_id')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'recipe_id',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to='recipes.recipe',
+                        verbose_name='recipe_id',
+                    ),
+                ),
+                (
+                    'tag_id',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to='recipes.tag',
+                        verbose_name='tag_id',
+                    ),
+                ),
             ],
             options={
                 'ordering': ('recipe_id',),
@@ -57,14 +129,42 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='recipe',
             name='tag',
-            field=models.ManyToManyField(blank=True, null=True, related_name='tags', to='recipes.Tag', verbose_name='теги'),
+            field=models.ManyToManyField(
+                blank=True,
+                null=True,
+                related_name='tags',
+                to='recipes.Tag',
+                verbose_name='теги',
+            ),
         ),
         migrations.CreateModel(
             name='IngredientRecipe',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('ingredient_id', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='recipes.ingredient', verbose_name='ingredient_id')),
-                ('recipe_id', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='recipes.recipe', verbose_name='recipe_id')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'ingredient_id',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to='recipes.ingredient',
+                        verbose_name='ingredient_id',
+                    ),
+                ),
+                (
+                    'recipe_id',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to='recipes.recipe',
+                        verbose_name='recipe_id',
+                    ),
+                ),
             ],
             options={
                 'ordering': ('recipe_id',),
