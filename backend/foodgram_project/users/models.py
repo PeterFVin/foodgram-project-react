@@ -12,21 +12,31 @@ class User(AbstractUser):
         verbose_name='имя пользователя',
         validators=[
             RegexValidator(
-                regex=r'^[\w.@+-]+$', message='«Введите допустимое значение».',
+                regex=r'^[\w.@+-]+$',
+                message='«Введите допустимое значение».',
             ),
         ],
     )
     email = models.EmailField(
-        max_length=100, unique=True, blank=False, verbose_name='e-mail',
+        max_length=100,
+        unique=True,
+        blank=False,
+        verbose_name='e-mail',
     )
     first_name = models.CharField(
-        max_length=30, blank=False, verbose_name='имя',
+        max_length=30,
+        blank=False,
+        verbose_name='имя',
     )
     last_name = models.CharField(
-        max_length=30, blank=False, verbose_name='фамилия',
+        max_length=30,
+        blank=False,
+        verbose_name='фамилия',
     )
     password = models.CharField(
-        max_length=50, blank=False, verbose_name='пароль',
+        max_length=50,
+        blank=False,
+        verbose_name='пароль',
     )
 
     USERNAME_FIELD = 'email'
@@ -58,7 +68,8 @@ class Subscribe(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_subscription',
+                fields=['user', 'author'],
+                name='unique_subscription',
             ),
         ]
         verbose_name = 'подписка'

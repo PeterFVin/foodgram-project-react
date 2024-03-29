@@ -48,7 +48,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = (AuthorOrReadOnly,)
     queryset = Recipe.objects.all()
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
     pagination_class = LimitOffsetPagination
 
@@ -67,7 +67,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe_unit = self.get_object()
         recipe_unit.delete()
         return response.Response(
-            'Рецепт успешно удален', status=status.HTTP_204_NO_CONTENT,
+            'Рецепт успешно удален',
+            status=status.HTTP_204_NO_CONTENT,
         )
 
     @action(
@@ -78,7 +79,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
             return self.add_recipe(
-                ShoppingCart, request.user, pk, request=request,
+                ShoppingCart,
+                request.user,
+                pk,
+                request=request,
             )
         else:
             return self.delete_recipe(ShoppingCart, request.user, pk)
@@ -116,7 +120,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'cooking_time': serializer.data['cooking_time'],
         }
         return response.Response(
-            represented_data, status=status.HTTP_201_CREATED,
+            represented_data,
+            status=status.HTTP_201_CREATED,
         )
 
     def delete_recipe(self, model, user, pk):

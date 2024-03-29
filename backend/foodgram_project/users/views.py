@@ -43,10 +43,12 @@ class UserViewSet(viewsets.ModelViewSet):
             else:
                 follow = Subscribe.objects.create(user=user, author=author)
                 serializer = SubscribeSerializer(
-                    follow, context={'request': request},
+                    follow,
+                    context={'request': request},
                 )
                 return Response(
-                    serializer.data, status=status.HTTP_201_CREATED,
+                    serializer.data,
+                    status=status.HTTP_201_CREATED,
                 )
         if self.request.method == 'DELETE':
             if Subscribe.objects.filter(user=user, author=author).exists():
@@ -72,7 +74,9 @@ class UserViewSet(viewsets.ModelViewSet):
         queryset = Subscribe.objects.filter(user=user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscribeSerializer(
-            pages, many=True, context={'request': request},
+            pages,
+            many=True,
+            context={'request': request},
         )
         return self.get_paginated_response(serializer.data)
 
@@ -90,7 +94,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
         if request.method == 'GET':
             serializer = UserSerializer(
-                self.request.user, context={'request': request},
+                self.request.user,
+                context={'request': request},
             )
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(

@@ -82,6 +82,18 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
+        ingredient_pairs = set()
+        for ingredient_data in ingredients:
+            ingredient_pair = (
+                ingredient_data['id'],
+                ingredient_data['amount'],
+            )
+            if ingredient_pair in ingredient_pairs:
+                raise serializers.ValidationError(
+                    'Нельзя указывать одинаковые ингредиенты.',
+                )
+            else:
+                ingredient_pairs.add(ingredient_pair)
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         IngredientRecipe.objects.bulk_create(
@@ -108,7 +120,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
-            'cooking_time', instance.cooking_time,
+            'cooking_time',
+            instance.cooking_time,
         )
         instance.image = validated_data.get('image', instance.image)
         instance.tags.set(tags)
@@ -142,14 +155,6 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise ValidationError(
                     {'ingredients': 'Вы указали несуществующий ингредиент!'},
                 )
-            if item in ingredients_list:
-                raise ValidationError(
-                    {'ingredients': 'Ингредиенты не могут повторяться!'},
-                )
-            if int(item['amount']) <= 0:
-                raise ValidationError(
-                    {'amount': 'Должен быть хотя бы один ингредиент!'},
-                )
             ingredients_list.append(item)
         return value
 
@@ -169,7 +174,8 @@ class RecipeSerializer(serializers.ModelSerializer):
             self.fields.pop('ingredients')
         representation = super().to_representation(obj)
         representation['ingredients'] = IngredientRecipeSerializer(
-            IngredientRecipe.objects.filter(recipe=obj).all(), many=True,
+            IngredientRecipe.objects.filter(recipe=obj).all(),
+            many=True,
         ).data
         representation['tags'] = TagSerializer(obj.tags, many=True).data
         return representation

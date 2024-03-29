@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.admin import display
 
 from recipes.models import (
@@ -12,8 +12,19 @@ from recipes.models import (
 )
 
 
+class IngredientRecipeInline(admin.TabularInline):
+    model = IngredientRecipe
+    extra = 1
+
+
+class TagRecipeInline(admin.TabularInline):
+    model = TagRecipe
+    extra = 1
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    inlines = [IngredientRecipeInline, TagRecipeInline]
     list_display = ('name', 'id', 'author', 'favorites_added_count')
     readonly_fields = ('favorites_added_count',)
     list_filter = (
@@ -25,7 +36,15 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @display(description='число добавлений в избранное')
     def favorites_added_count(self, obj):
-        return obj.favorites.count()
+        return obj.favorite.count()
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+
+        recipe = form.instance
+        if not recipe.tags.exists() or not recipe.ingredients.exists():
+            messages.error(request, 'Укажите хотя бы один ингредиент и тег!')
+            recipe.delete()
 
 
 @admin.register(Ingredient)

@@ -63,7 +63,6 @@ class UserSerializer(UserSerializer):
 
     def to_representation(self, obj):
         representation = super().to_representation(obj)
-        print(representation)
         representation.pop('password')
         return representation
 
@@ -106,7 +105,8 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         return Subscribe.objects.filter(
-            user=obj.user, author=obj.author,
+            user=obj.user,
+            author=obj.author,
         ).exists()
 
     def get_recipes(self, obj):
