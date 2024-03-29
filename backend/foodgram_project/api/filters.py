@@ -19,7 +19,8 @@ class RecipeFilter(filters.FilterSet):
     )
     author = filters.NumberFilter(field_name='author', label='автор')
     is_favorited = filters.BooleanFilter(
-        field_name='recipe_favorite__user', method='filter_is_favorited',
+        field_name='recipe_favorite__user',
+        method='filter_is_favorited',
     )
     is_in_shopping_cart = filters.BooleanFilter(
         field_name='recipe_shopping_cart__user',
