@@ -7,88 +7,88 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0007_auto_20231228_1447'),
+        ("recipes", "0007_auto_20231228_1447"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ingredientrecipe',
-            options={'ordering': ('recipe',)},
+            name="ingredientrecipe",
+            options={"ordering": ("recipe",)},
         ),
         migrations.AlterModelOptions(
-            name='tagrecipe',
-            options={'ordering': ('recipe',)},
+            name="tagrecipe",
+            options={"ordering": ("recipe",)},
         ),
         migrations.RemoveConstraint(
-            model_name='ingredientrecipe',
-            name='unique_recipe_ingredient',
+            model_name="ingredientrecipe",
+            name="unique_recipe_ingredient",
         ),
         migrations.RemoveField(
-            model_name='ingredientrecipe',
-            name='ingredient_id',
+            model_name="ingredientrecipe",
+            name="ingredient_id",
         ),
         migrations.RemoveField(
-            model_name='ingredientrecipe',
-            name='recipe_id',
+            model_name="ingredientrecipe",
+            name="recipe_id",
         ),
         migrations.RemoveField(
-            model_name='tagrecipe',
-            name='recipe_id',
+            model_name="tagrecipe",
+            name="recipe_id",
         ),
         migrations.RemoveField(
-            model_name='tagrecipe',
-            name='tag_id',
+            model_name="tagrecipe",
+            name="tag_id",
         ),
         migrations.AddField(
-            model_name='ingredientrecipe',
-            name='ingredient',
+            model_name="ingredientrecipe",
+            name="ingredient",
             field=models.ForeignKey(
                 default=1,
                 on_delete=django.db.models.deletion.DO_NOTHING,
-                to='recipes.ingredient',
-                verbose_name='ingredient',
+                to="recipes.ingredient",
+                verbose_name="ingredient",
             ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='ingredientrecipe',
-            name='recipe',
+            model_name="ingredientrecipe",
+            name="recipe",
             field=models.ForeignKey(
                 default=1,
                 on_delete=django.db.models.deletion.DO_NOTHING,
-                related_name='ingredient_list',
-                to='recipes.recipe',
-                verbose_name='recipe',
+                related_name="ingredient_list",
+                to="recipes.recipe",
+                verbose_name="recipe",
             ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='tagrecipe',
-            name='recipe',
+            model_name="tagrecipe",
+            name="recipe",
             field=models.ForeignKey(
                 default=1,
                 on_delete=django.db.models.deletion.DO_NOTHING,
-                to='recipes.recipe',
-                verbose_name='recipe',
+                to="recipes.recipe",
+                verbose_name="recipe",
             ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='tagrecipe',
-            name='tag',
+            model_name="tagrecipe",
+            name="tag",
             field=models.ForeignKey(
                 default=1,
                 on_delete=django.db.models.deletion.DO_NOTHING,
-                to='recipes.tag',
-                verbose_name='tag',
+                to="recipes.tag",
+                verbose_name="tag",
             ),
             preserve_default=False,
         ),
         migrations.AddConstraint(
-            model_name='ingredientrecipe',
+            model_name="ingredientrecipe",
             constraint=models.UniqueConstraint(
-                fields=('recipe', 'ingredient'),
-                name='unique_recipe_ingredient',
+                fields=("recipe", "ingredient"),
+                name="unique_recipe_ingredient",
             ),
         ),
     ]

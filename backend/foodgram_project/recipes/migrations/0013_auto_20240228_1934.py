@@ -9,69 +9,69 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('recipes', '0012_auto_20240227_1940'),
+        ("recipes", "0012_auto_20240227_1940"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='favorite',
-            name='recipe',
+            model_name="favorite",
+            name="recipe",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='favorite',
-                to='recipes.recipe',
-                verbose_name='рецепт',
+                related_name="favorite",
+                to="recipes.recipe",
+                verbose_name="рецепт",
             ),
         ),
         migrations.AlterField(
-            model_name='favorite',
-            name='user',
+            model_name="favorite",
+            name="user",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='favorite',
+                related_name="favorite",
                 to=settings.AUTH_USER_MODEL,
-                verbose_name='пользователь',
+                verbose_name="пользователь",
             ),
         ),
         migrations.CreateModel(
-            name='ShoppingCart',
+            name="ShoppingCart",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'recipe',
+                    "recipe",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='shopping_cart',
-                        to='recipes.recipe',
-                        verbose_name='рецепт',
+                        related_name="shopping_cart",
+                        to="recipes.recipe",
+                        verbose_name="рецепт",
                     ),
                 ),
                 (
-                    'user',
+                    "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='shopping_cart',
+                        related_name="shopping_cart",
                         to=settings.AUTH_USER_MODEL,
-                        verbose_name='пользователь',
+                        verbose_name="пользователь",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'список покупок',
+                "verbose_name": "список покупок",
             },
         ),
         migrations.AddConstraint(
-            model_name='shoppingcart',
+            model_name="shoppingcart",
             constraint=models.UniqueConstraint(
-                fields=('user', 'recipe'), name='unique_shopping_cart'
+                fields=("user", "recipe"), name="unique_shopping_cart"
             ),
         ),
     ]

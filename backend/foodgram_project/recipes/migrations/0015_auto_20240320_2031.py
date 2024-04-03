@@ -7,75 +7,75 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0014_auto_20240306_1538'),
+        ("recipes", "0014_auto_20240306_1538"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ingredientrecipe',
-            name='ingredient',
+            model_name="ingredientrecipe",
+            name="ingredient",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='recipes.ingredient',
-                verbose_name='ингредиент',
+                to="recipes.ingredient",
+                verbose_name="ингредиент",
             ),
         ),
         migrations.AlterField(
-            model_name='ingredientrecipe',
-            name='recipe',
+            model_name="ingredientrecipe",
+            name="recipe",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='ingredient_list',
-                to='recipes.recipe',
-                verbose_name='рецепт',
+                related_name="ingredient_list",
+                to="recipes.recipe",
+                verbose_name="рецепт",
             ),
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='ingredients',
+            model_name="recipe",
+            name="ingredients",
             field=models.ManyToManyField(
-                related_name='recipes',
-                through='recipes.IngredientRecipe',
-                to='recipes.Ingredient',
-                verbose_name='ингредиенты',
+                related_name="recipes",
+                through="recipes.IngredientRecipe",
+                to="recipes.Ingredient",
+                verbose_name="ингредиенты",
             ),
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='tags',
+            model_name="recipe",
+            name="tags",
             field=models.ManyToManyField(
-                related_name='recipes',
-                through='recipes.TagRecipe',
-                to='recipes.Tag',
-                verbose_name='теги',
+                related_name="recipes",
+                through="recipes.TagRecipe",
+                to="recipes.Tag",
+                verbose_name="теги",
             ),
         ),
         migrations.AlterField(
-            model_name='tag',
-            name='color',
+            model_name="tag",
+            name="color",
             field=models.CharField(
-                default='#FF0000',
+                default="#FF0000",
                 max_length=7,
                 unique=True,
-                verbose_name='цвет',
+                verbose_name="цвет",
             ),
         ),
         migrations.AlterField(
-            model_name='tagrecipe',
-            name='recipe',
+            model_name="tagrecipe",
+            name="recipe",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='recipes.recipe',
-                verbose_name='рецепт',
+                to="recipes.recipe",
+                verbose_name="рецепт",
             ),
         ),
         migrations.AlterField(
-            model_name='tagrecipe',
-            name='tag',
+            model_name="tagrecipe",
+            name="tag",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='recipes.tag',
-                verbose_name='тег',
+                to="recipes.tag",
+                verbose_name="тег",
             ),
         ),
     ]

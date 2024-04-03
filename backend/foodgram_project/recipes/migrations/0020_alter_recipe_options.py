@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0019_remove_ingredientrecipe_unique_recipe_ingredient'),
+        ("recipes", "0019_remove_ingredientrecipe_unique_recipe_ingredient"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='recipe',
-            options={'ordering': ['-id'], 'verbose_name_plural': 'рецепты'},
+            name="recipe",
+            options={"ordering": ["-id"], "verbose_name_plural": "рецепты"},
         ),
     ]

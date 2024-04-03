@@ -53,7 +53,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
 
     def get_permissions(self):
-        if self.action == ('create'):
+        if self.action == ("create"):
             return (IsAuthenticatedOrReadOnly(),)
         return super().get_permissions()
 
@@ -67,17 +67,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe_unit = self.get_object()
         recipe_unit.delete()
         return response.Response(
-            'Рецепт успешно удален',
+            "Рецепт успешно удален",
             status=status.HTTP_204_NO_CONTENT,
         )
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=["post", "delete"],
         permission_classes=[IsAuthenticated],
     )
     def shopping_cart(self, request, pk):
-        if request.method == 'POST':
+        if request.method == "POST":
             return self.add_recipe(
                 ShoppingCart,
                 request.user,
@@ -89,11 +89,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=["post", "delete"],
         permission_classes=[IsAuthenticated],
     )
     def favorite(self, request, pk):
-        if request.method == 'POST':
+        if request.method == "POST":
             return self.add_recipe(Favorite, request.user, pk, request=request)
         else:
             return self.delete_recipe(Favorite, request.user, pk)
@@ -102,22 +102,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Добавление рецепта в избранное или в покупки"""
         if model.objects.filter(user=user, recipe__id=pk).exists():
             return response.Response(
-                {'errors': 'Рецепт уже добавлен!'},
+                {"errors": "Рецепт уже добавлен!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if not Recipe.objects.filter(id=pk):
             raise ValidationError(
-                {'recipes': 'Вы указали несуществующий рецепт!'},
+                {"recipes": "Вы указали несуществующий рецепт!"},
             )
         else:
             recipe = Recipe.objects.get(id=pk)
         model.objects.create(user=user, recipe=recipe)
-        serializer = RecipeSerializer(recipe, context={'request': request})
+        serializer = RecipeSerializer(recipe, context={"request": request})
         represented_data = {
-            'id': serializer.data['id'],
-            'name': serializer.data['name'],
-            'image': serializer.data['image'],
-            'cooking_time': serializer.data['cooking_time'],
+            "id": serializer.data["id"],
+            "name": serializer.data["name"],
+            "image": serializer.data["image"],
+            "cooking_time": serializer.data["cooking_time"],
         }
         return response.Response(
             represented_data,
@@ -132,18 +132,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return response.Response(status=status.HTTP_204_NO_CONTENT)
         if Recipe.objects.filter(id=pk).exists():
             return response.Response(
-                {'errors': 'Рецепт уже удален!'},
+                {"errors": "Рецепт уже удален!"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         else:
             return response.Response(
-                {'errors': 'Такой рецепт не создавался!'},
+                {"errors": "Такой рецепт не создавался!"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
     @action(
         detail=False,
-        methods=['get'],
+        methods=["get"],
         permission_classes=[IsAuthenticated],
     )
     def download_shopping_cart(self, request):
@@ -153,14 +153,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 recipe__shopping_cart__user=request.user.id,
             )
             .values(
-                'recipe__ingredients__name',
-                'recipe__ingredients__measurement_unit',
+                "recipe__ingredients__name",
+                "recipe__ingredients__measurement_unit",
             )
-            .annotate(amount=Sum('recipe__ingredient_list__amount'))
+            .annotate(amount=Sum("recipe__ingredient_list__amount"))
         )
         today = datetime.today()
-        shopping_cart = f'Список покупок для Вас на {today:%d-%m-%Y}\n\n'
-        shopping_cart += '\n'.join(
+        shopping_cart = f"Список покупок для Вас на {today:%d-%m-%Y}\n\n"
+        shopping_cart += "\n".join(
             [
                 f'- {ingredient["recipe__ingredients__name"]} '
                 f'({ingredient["recipe__ingredients__measurement_unit"]})'
@@ -168,10 +168,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 for ingredient in ingredients
             ],
         )
-        shopping_cart += f'\n\nFoodgram. Виноградов Петр. {today:%Y}'
+        shopping_cart += f"\n\nFoodgram. Виноградов Петр. {today:%Y}"
 
-        filename = 'shopping_cart.txt'
-        response = HttpResponse(shopping_cart, content_type='text/plain')
-        response['Content-Disposition'] = f'attachment; filename={filename}'
+        filename = "shopping_cart.txt"
+        response = HttpResponse(shopping_cart, content_type="text/plain")
+        response["Content-Disposition"] = f"attachment; filename={filename}"
 
         return response

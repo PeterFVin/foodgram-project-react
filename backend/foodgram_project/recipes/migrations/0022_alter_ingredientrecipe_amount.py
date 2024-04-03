@@ -7,20 +7,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0021_alter_recipe_image'),
+        ("recipes", "0021_alter_recipe_image"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ingredientrecipe',
-            name='amount',
+            model_name="ingredientrecipe",
+            name="amount",
             field=models.PositiveSmallIntegerField(
                 validators=[
                     django.core.validators.MinValueValidator(
-                        1, message='должен быть хотя бы один ингредиент!'
+                        1, message="должен быть хотя бы один ингредиент!"
                     )
                 ],
-                verbose_name='количество',
+                verbose_name="количество",
             ),
         ),
     ]

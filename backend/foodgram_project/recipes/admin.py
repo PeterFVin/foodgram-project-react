@@ -1,5 +1,8 @@
-from django.contrib import admin, messages
+from django import forms
+from django.contrib import admin
 from django.contrib.admin import display
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from recipes.models import (
     Favorite,
@@ -12,7 +15,23 @@ from recipes.models import (
 )
 
 
+class RecipeAdminForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = "__all__"
+
+    def clean(self):
+        forms_data = self.data
+        if (forms_data["ingredient_list-0-ingredient"] != "") and (
+            forms_data["tagrecipe_set-0-tag"] != ""
+        ):
+            return
+        else:
+            raise ValidationError(_("Укажите хотя бы один ингредиент и тег в рецепте!"))
+
+
 class IngredientRecipeInline(admin.TabularInline):
+
     model = IngredientRecipe
     extra = 1
 
@@ -24,75 +43,68 @@ class TagRecipeInline(admin.TabularInline):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    form = RecipeAdminForm
     inlines = [IngredientRecipeInline, TagRecipeInline]
-    list_display = ('name', 'id', 'author', 'favorites_added_count')
-    readonly_fields = ('favorites_added_count',)
+    list_display = ("name", "id", "author", "favorites_added_count")
+    readonly_fields = ("favorites_added_count",)
     list_filter = (
-        'author',
-        'name',
-        'tags',
+        "author",
+        "name",
+        "tags",
     )
-    empty_value_display = 'пусто'
+    empty_value_display = "пусто"
 
-    @display(description='число добавлений в избранное')
+    @display(description="число добавлений в избранное")
     def favorites_added_count(self, obj):
         return obj.favorite.count()
-
-    def save_related(self, request, form, formsets, change):
-        super().save_related(request, form, formsets, change)
-
-        recipe = form.instance
-        if not recipe.tags.exists() or not recipe.ingredients.exists():
-            messages.error(request, 'Укажите хотя бы один ингредиент и тег!')
-            recipe.delete()
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = (
-        'name',
-        'measurement_unit',
+        "name",
+        "measurement_unit",
     )
-    list_filter = ('name',)
+    list_filter = ("name",)
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
-        'name',
-        'color',
-        'slug',
+        "name",
+        "color",
+        "slug",
     )
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = (
-        'user',
-        'recipe',
+        "user",
+        "recipe",
     )
 
 
 @admin.register(Favorite)
 class FavouriteAdmin(admin.ModelAdmin):
     list_display = (
-        'user',
-        'recipe',
+        "user",
+        "recipe",
     )
 
 
 @admin.register(IngredientRecipe)
 class IngredientRecipe(admin.ModelAdmin):
     list_display = (
-        'recipe',
-        'ingredient',
-        'amount',
+        "recipe",
+        "ingredient",
+        "amount",
     )
 
 
 @admin.register(TagRecipe)
 class TagRecipe(admin.ModelAdmin):
     list_display = (
-        'recipe',
-        'tag',
+        "recipe",
+        "tag",
     )

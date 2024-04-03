@@ -6,22 +6,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0002_auto_20231223_1542'),
+        ("recipes", "0002_auto_20231223_1542"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='ingredient',
+            model_name="recipe",
+            name="ingredient",
             field=models.ManyToManyField(
-                through='recipes.IngredientRecipe', to='recipes.Ingredient'
+                through="recipes.IngredientRecipe", to="recipes.Ingredient"
             ),
         ),
         migrations.AddField(
-            model_name='recipe',
-            name='tag',
-            field=models.ManyToManyField(
-                through='recipes.TagRecipe', to='recipes.Tag'
-            ),
+            model_name="recipe",
+            name="tag",
+            field=models.ManyToManyField(through="recipes.TagRecipe", to="recipes.Tag"),
         ),
     ]

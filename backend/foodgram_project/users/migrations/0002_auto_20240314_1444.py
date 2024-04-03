@@ -8,50 +8,50 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Subscribe',
+            name="Subscribe",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'author',
+                    "author",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='author',
+                        related_name="author",
                         to=settings.AUTH_USER_MODEL,
-                        verbose_name='автор',
+                        verbose_name="автор",
                     ),
                 ),
                 (
-                    'user',
+                    "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='subscriber',
+                        related_name="subscriber",
                         to=settings.AUTH_USER_MODEL,
-                        verbose_name='подписчик',
+                        verbose_name="подписчик",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'подписка',
-                'verbose_name_plural': 'подписки',
+                "verbose_name": "подписка",
+                "verbose_name_plural": "подписки",
             },
         ),
         migrations.AddConstraint(
-            model_name='subscribe',
+            model_name="subscribe",
             constraint=models.UniqueConstraint(
-                fields=('user', 'author'), name='unique_subscription'
+                fields=("user", "author"), name="unique_subscription"
             ),
         ),
     ]

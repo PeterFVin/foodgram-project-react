@@ -7,36 +7,36 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0006_auto_20231227_2056'),
+        ("recipes", "0006_auto_20231227_2056"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ingredientrecipe',
-            name='recipe_id',
+            model_name="ingredientrecipe",
+            name="recipe_id",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.DO_NOTHING,
-                related_name='ingredient_list',
-                to='recipes.recipe',
-                verbose_name='recipe_id',
+                related_name="ingredient_list",
+                to="recipes.recipe",
+                verbose_name="recipe_id",
             ),
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='ingredients',
+            model_name="recipe",
+            name="ingredients",
             field=models.ManyToManyField(
-                related_name='recipes',
-                through='recipes.IngredientRecipe',
-                to='recipes.Ingredient',
+                related_name="recipes",
+                through="recipes.IngredientRecipe",
+                to="recipes.Ingredient",
             ),
         ),
         migrations.AlterField(
-            model_name='recipe',
-            name='tags',
+            model_name="recipe",
+            name="tags",
             field=models.ManyToManyField(
-                related_name='recipes',
-                through='recipes.TagRecipe',
-                to='recipes.Tag',
+                related_name="recipes",
+                through="recipes.TagRecipe",
+                to="recipes.Tag",
             ),
         ),
     ]

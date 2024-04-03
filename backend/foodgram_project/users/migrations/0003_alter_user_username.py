@@ -7,23 +7,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_auto_20240314_1444'),
+        ("users", "0002_auto_20240314_1444"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='username',
+            model_name="user",
+            name="username",
             field=models.CharField(
                 max_length=100,
                 unique=True,
                 validators=[
                     django.core.validators.RegexValidator(
-                        message='«Введите допустимое значение».',
-                        regex='^[\\w.@+-]+$',
+                        message="«Введите допустимое значение».",
+                        regex="^[\\w.@+-]+$",
                     )
                 ],
-                verbose_name='имя пользователя',
+                verbose_name="имя пользователя",
             ),
         ),
     ]

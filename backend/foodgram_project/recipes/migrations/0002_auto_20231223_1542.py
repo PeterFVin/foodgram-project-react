@@ -7,27 +7,27 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0001_initial'),
+        ("recipes", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='ingredient',
-            name='quantity',
+            model_name="ingredient",
+            name="quantity",
         ),
         migrations.RemoveField(
-            model_name='recipe',
-            name='ingredient',
+            model_name="recipe",
+            name="ingredient",
         ),
         migrations.RemoveField(
-            model_name='recipe',
-            name='tag',
+            model_name="recipe",
+            name="tag",
         ),
         migrations.AddField(
-            model_name='tag',
-            name='color',
+            model_name="tag",
+            name="color",
             field=colorfield.fields.ColorField(
-                default='#FF0000',
+                default="#FF0000",
                 image_field=None,
                 max_length=25,
                 samples=None,

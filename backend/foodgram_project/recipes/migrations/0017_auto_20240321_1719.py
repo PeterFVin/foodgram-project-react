@@ -6,28 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0016_auto_20240321_1716'),
+        ("recipes", "0016_auto_20240321_1716"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='favorite',
-            options={'verbose_name_plural': 'избранное'},
+            name="favorite",
+            options={"verbose_name_plural": "избранное"},
         ),
         migrations.AlterModelOptions(
-            name='ingredient',
-            options={'verbose_name_plural': 'ингредиенты'},
+            name="ingredient",
+            options={"verbose_name_plural": "ингредиенты"},
         ),
         migrations.AlterModelOptions(
-            name='recipe',
-            options={'ordering': ('name',), 'verbose_name_plural': 'рецепты'},
+            name="recipe",
+            options={"ordering": ("name",), "verbose_name_plural": "рецепты"},
         ),
         migrations.AlterModelOptions(
-            name='shoppingcart',
-            options={'verbose_name_plural': 'список покупок'},
+            name="shoppingcart",
+            options={"verbose_name_plural": "список покупок"},
         ),
         migrations.AlterModelOptions(
-            name='tag',
-            options={'verbose_name_plural': 'теги'},
+            name="tag",
+            options={"verbose_name_plural": "теги"},
         ),
     ]

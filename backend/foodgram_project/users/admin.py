@@ -7,19 +7,19 @@ from .models import Subscribe, User
 @admin.register(User)
 class UserAdmin(UserAdmin):
     list_display = (
-        'username',
-        'id',
-        'email',
-        'first_name',
-        'last_name',
+        "username",
+        "id",
+        "email",
+        "first_name",
+        "last_name",
     )
-    list_filter = ('email', 'username')
-    empty_value_display = 'пусто'
+    list_filter = ("email", "username")
+    empty_value_display = "пусто"
 
 
 @admin.register(Subscribe)
 class SubscribeAdmin(admin.ModelAdmin):
     list_display = (
-        'user',
-        'author',
+        "user",
+        "author",
     )

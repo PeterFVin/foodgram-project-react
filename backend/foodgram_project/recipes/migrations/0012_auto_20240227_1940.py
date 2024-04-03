@@ -9,49 +9,49 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('recipes', '0011_recipe_author'),
+        ("recipes", "0011_recipe_author"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Favorite',
+            name="Favorite",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'recipe',
+                    "recipe",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='favorites',
-                        to='recipes.recipe',
-                        verbose_name='рецепт',
+                        related_name="favorites",
+                        to="recipes.recipe",
+                        verbose_name="рецепт",
                     ),
                 ),
                 (
-                    'user',
+                    "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name='favorites',
+                        related_name="favorites",
                         to=settings.AUTH_USER_MODEL,
-                        verbose_name='пользователь',
+                        verbose_name="пользователь",
                     ),
                 ),
             ],
             options={
-                'verbose_name': 'избранное',
+                "verbose_name": "избранное",
             },
         ),
         migrations.AddConstraint(
-            model_name='favorite',
+            model_name="favorite",
             constraint=models.UniqueConstraint(
-                fields=('user', 'recipe'), name='unique_favorite'
+                fields=("user", "recipe"), name="unique_favorite"
             ),
         ),
     ]

@@ -6,20 +6,20 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0015_auto_20240320_2031'),
+        ("recipes", "0015_auto_20240320_2031"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='ingredient',
-            options={'verbose_name': 'ингредиенты'},
+            name="ingredient",
+            options={"verbose_name": "ингредиенты"},
         ),
         migrations.AlterModelOptions(
-            name='recipe',
-            options={'ordering': ('name',), 'verbose_name': 'рецепты'},
+            name="recipe",
+            options={"ordering": ("name",), "verbose_name": "рецепты"},
         ),
         migrations.AlterModelOptions(
-            name='tag',
-            options={'verbose_name': 'теги'},
+            name="tag",
+            options={"verbose_name": "теги"},
         ),
     ]

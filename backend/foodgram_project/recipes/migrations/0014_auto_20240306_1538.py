@@ -7,45 +7,45 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0013_auto_20240228_1934'),
+        ("recipes", "0013_auto_20240228_1934"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='ingredientrecipe',
-            name='ingredient',
+            model_name="ingredientrecipe",
+            name="ingredient",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='recipes.ingredient',
-                verbose_name='ingredient',
+                to="recipes.ingredient",
+                verbose_name="ingredient",
             ),
         ),
         migrations.AlterField(
-            model_name='ingredientrecipe',
-            name='recipe',
+            model_name="ingredientrecipe",
+            name="recipe",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name='ingredient_list',
-                to='recipes.recipe',
-                verbose_name='recipe',
+                related_name="ingredient_list",
+                to="recipes.recipe",
+                verbose_name="recipe",
             ),
         ),
         migrations.AlterField(
-            model_name='tagrecipe',
-            name='recipe',
+            model_name="tagrecipe",
+            name="recipe",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='recipes.recipe',
-                verbose_name='recipe',
+                to="recipes.recipe",
+                verbose_name="recipe",
             ),
         ),
         migrations.AlterField(
-            model_name='tagrecipe',
-            name='tag',
+            model_name="tagrecipe",
+            name="tag",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                to='recipes.tag',
-                verbose_name='tag',
+                to="recipes.tag",
+                verbose_name="tag",
             ),
         ),
     ]

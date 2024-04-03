@@ -9,18 +9,18 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('recipes', '0010_auto_20240131_1846'),
+        ("recipes", "0010_auto_20240131_1846"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='recipe',
-            name='author',
+            model_name="recipe",
+            name="author",
             field=models.ForeignKey(
                 default=2,
                 on_delete=django.db.models.deletion.CASCADE,
-                to='users.user',
-                verbose_name='создатель рецепта',
+                to="users.user",
+                verbose_name="создатель рецепта",
             ),
             preserve_default=False,
         ),

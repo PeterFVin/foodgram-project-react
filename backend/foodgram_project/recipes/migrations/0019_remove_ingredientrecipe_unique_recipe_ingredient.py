@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0018_alter_recipe_cooking_time'),
+        ("recipes", "0018_alter_recipe_cooking_time"),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='ingredientrecipe',
-            name='unique_recipe_ingredient',
+            model_name="ingredientrecipe",
+            name="unique_recipe_ingredient",
         ),
     ]

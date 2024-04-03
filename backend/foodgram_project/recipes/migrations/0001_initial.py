@@ -12,162 +12,160 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Ingredient',
+            name="Ingredient",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'name',
-                    models.CharField(max_length=32, verbose_name='название'),
+                    "name",
+                    models.CharField(max_length=32, verbose_name="название"),
                 ),
-                ('quantity', models.IntegerField(verbose_name='количество')),
+                ("quantity", models.IntegerField(verbose_name="количество")),
                 (
-                    'measurement_unit',
-                    models.CharField(
-                        max_length=32, verbose_name='единица измерения'
-                    ),
+                    "measurement_unit",
+                    models.CharField(max_length=32, verbose_name="единица измерения"),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name='Recipe',
+            name="Recipe",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'name',
-                    models.CharField(max_length=100, verbose_name='рецепт'),
+                    "name",
+                    models.CharField(max_length=100, verbose_name="рецепт"),
                 ),
                 (
-                    'image',
-                    models.ImageField(upload_to='', verbose_name='картинка'),
+                    "image",
+                    models.ImageField(upload_to="", verbose_name="картинка"),
                 ),
                 (
-                    'description',
-                    models.TextField(verbose_name='описание рецепта'),
+                    "description",
+                    models.TextField(verbose_name="описание рецепта"),
                 ),
                 (
-                    'time',
-                    models.IntegerField(verbose_name='время приготовления'),
+                    "time",
+                    models.IntegerField(verbose_name="время приготовления"),
                 ),
                 (
-                    'ingredient',
+                    "ingredient",
                     models.ManyToManyField(
-                        related_name='ingredientss',
-                        to='recipes.Ingredient',
-                        verbose_name='ингредиенты',
+                        related_name="ingredientss",
+                        to="recipes.Ingredient",
+                        verbose_name="ингредиенты",
                     ),
                 ),
             ],
             options={
-                'ordering': ('name',),
+                "ordering": ("name",),
             },
         ),
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
-                ('name', models.CharField(max_length=32, verbose_name='тег')),
-                ('slug', models.SlugField(unique=True, verbose_name='slug')),
+                ("name", models.CharField(max_length=32, verbose_name="тег")),
+                ("slug", models.SlugField(unique=True, verbose_name="slug")),
             ],
         ),
         migrations.CreateModel(
-            name='TagRecipe',
+            name="TagRecipe",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'recipe_id',
+                    "recipe_id",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.DO_NOTHING,
-                        to='recipes.recipe',
-                        verbose_name='recipe_id',
+                        to="recipes.recipe",
+                        verbose_name="recipe_id",
                     ),
                 ),
                 (
-                    'tag_id',
+                    "tag_id",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.DO_NOTHING,
-                        to='recipes.tag',
-                        verbose_name='tag_id',
+                        to="recipes.tag",
+                        verbose_name="tag_id",
                     ),
                 ),
             ],
             options={
-                'ordering': ('recipe_id',),
+                "ordering": ("recipe_id",),
             },
         ),
         migrations.AddField(
-            model_name='recipe',
-            name='tag',
+            model_name="recipe",
+            name="tag",
             field=models.ManyToManyField(
                 blank=True,
                 null=True,
-                related_name='tags',
-                to='recipes.Tag',
-                verbose_name='теги',
+                related_name="tags",
+                to="recipes.Tag",
+                verbose_name="теги",
             ),
         ),
         migrations.CreateModel(
-            name='IngredientRecipe',
+            name="IngredientRecipe",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
                 (
-                    'ingredient_id',
+                    "ingredient_id",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.DO_NOTHING,
-                        to='recipes.ingredient',
-                        verbose_name='ingredient_id',
+                        to="recipes.ingredient",
+                        verbose_name="ingredient_id",
                     ),
                 ),
                 (
-                    'recipe_id',
+                    "recipe_id",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.DO_NOTHING,
-                        to='recipes.recipe',
-                        verbose_name='recipe_id',
+                        to="recipes.recipe",
+                        verbose_name="recipe_id",
                     ),
                 ),
             ],
             options={
-                'ordering': ('recipe_id',),
+                "ordering": ("recipe_id",),
             },
         ),
     ]
