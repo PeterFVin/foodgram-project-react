@@ -27,7 +27,7 @@ class RecipeAdminForm(forms.ModelForm):
         ):
             return
         else:
-            raise ValidationError(_("Укажите хотя бы один ингредиент и тег в рецепте!"))
+            raise ValidationError(_("Укажите хотя бы один ингредиент и тег!"))
 
 
 class IngredientRecipeInline(admin.TabularInline):
