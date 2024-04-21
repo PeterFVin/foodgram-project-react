@@ -68,7 +68,7 @@ class UserViewSet(UserViewSet):
         )
 
     @subscribe.mapping.delete
-    def remove_from_shopping_cart(self, request, id):
+    def remove_from_subscribes(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)
         if Subscribe.objects.filter(user=user, author=author).exists():
