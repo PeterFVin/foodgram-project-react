@@ -132,27 +132,37 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeGetSerializer
         return RecipeWriteSerializer
 
-    @action(detail=True, methods=["post"],
-            permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=("post",),
+        permission_classes=(IsAuthenticated,),
+    )
     def shopping_cart(self, request, pk):
-        return self.post(ShoppingCart, request.user, pk, request=request)
+        return self.add_obj(
+            ShoppingCart,
+            request.user,
+            pk,
+            request=request,
+        )
 
     @shopping_cart.mapping.delete
     def remove_from_shopping_cart(self, request, pk):
-        return self.delete(ShoppingCart, request.user, pk)
+        return self.delete_obj(ShoppingCart, request.user, pk)
 
-    @action(detail=True, methods=["post"],
-            permission_classes=[IsAuthenticated])
+    @action(
+        detail=True,
+        methods=("post",),
+        permission_classes=(IsAuthenticated,),
+    )
     def favorite(self, request, pk):
-        return self.post(Favorite, pk, request=request)
+        return self.add_obj(Favorite, request.user, pk, request=request)
 
     @favorite.mapping.delete
     def remove_from_favorite(self, request, pk):
-        return self.delete(Favorite, request.user, pk)
+        return self.delete_obj(Favorite, request.user, pk)
 
-    def post(self, model, pk, request):
+    def add_obj(self, model, user, pk, request):
         """Добавление рецепта в избранное или в покупки"""
-        user = request.user
         if model.objects.filter(user=user, recipe__id=pk).exists():
             return response.Response(
                 {"errors": "Рецепт уже добавлен!"},
@@ -165,8 +175,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         else:
             recipe = Recipe.objects.get(id=pk)
         model.objects.create(user=user, recipe=recipe)
-        serializer = RecipeWriteSerializer(
-            recipe, context={"request": request})
+        serializer = RecipeWriteSerializer(recipe,
+                                           context={"request": request})
         represented_data = {
             "id": serializer.data["id"],
             "name": serializer.data["name"],
@@ -178,7 +188,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    def delete(self, model, user, pk):
+    def delete_obj(self, model, user, pk):
         """Удаление рецепта из избранного или из покупок"""
         obj = model.objects.filter(user=user, recipe__id=pk)
         if obj.exists():
