@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 
-from users.constants import email_max_length, user_common_max_length
+from users.constants import EMAIL_MAX_LENGTH, USER_COMMON_MAX_LENGTH
 
 
 class User(AbstractUser):
@@ -10,27 +10,27 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ("username", "first_name", "last_name")
 
     username = models.CharField(
-        max_length=user_common_max_length,
+        max_length=USER_COMMON_MAX_LENGTH,
         unique=True,
         verbose_name="имя пользователя",
-        validators=[
+        validators=(
             RegexValidator(
                 regex=r"^[\w.@+-]+$",
                 message="«Введите допустимое значение».",
             ),
-        ],
+        ),
     )
     email = models.EmailField(
-        max_length=email_max_length,
+        max_length=EMAIL_MAX_LENGTH,
         unique=True,
         verbose_name="e-mail",
     )
     first_name = models.CharField(
-        max_length=user_common_max_length,
+        max_length=USER_COMMON_MAX_LENGTH,
         verbose_name="имя",
     )
     last_name = models.CharField(
-        max_length=user_common_max_length,
+        max_length=USER_COMMON_MAX_LENGTH,
         verbose_name="фамилия",
     )
 
@@ -58,7 +58,7 @@ class Subscribe(models.Model):
     )
 
     class Meta:
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
                 fields=("user", "author"),
                 name="unique_subscription",
@@ -67,7 +67,7 @@ class Subscribe(models.Model):
                 name="users_subscribes_prevent_self_follow",
                 check=~models.Q(user=models.F("author")),
             ),
-        ]
+        )
         verbose_name = "подписка"
         verbose_name_plural = "подписки"
 

@@ -1,5 +1,8 @@
 from datetime import datetime
-from django.http import HttpResponse
+
+from django.http import FileResponse
+
+from recipes.models import IngredientRecipe
 
 
 def download_shopping_cart_static(ingredients):
@@ -16,6 +19,19 @@ def download_shopping_cart_static(ingredients):
     shopping_cart += f"\n\nFoodgram. Виноградов Петр. {today:%Y}"
 
     filename = "shopping_cart.txt"
-    response = HttpResponse(shopping_cart, content_type="text/plain")
+    response = FileResponse(shopping_cart, content_type="text/plain")
     response["Content-Disposition"] = f"attachment; filename={filename}"
     return response
+
+
+def bulk_create_ingredients(self, ingredients_data, recipe):
+    IngredientRecipe.objects.bulk_create(
+        [
+            IngredientRecipe(
+                ingredient_id=(self.initial_data["ingredients"][number]["id"]),
+                recipe=recipe,
+                amount=ingredient["amount"],
+            )
+            for number, ingredient in enumerate(ingredients_data)
+        ],
+    )

@@ -1,2 +1,2 @@
-email_max_length = 254
-user_common_max_length = 150
+EMAIL_MAX_LENGTH = 254
+USER_COMMON_MAX_LENGTH = 150

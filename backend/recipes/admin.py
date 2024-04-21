@@ -1,8 +1,5 @@
-from django import forms
 from django.contrib import admin
 from django.contrib.admin import display
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
 
 from recipes.models import (
     Favorite,
@@ -11,23 +8,7 @@ from recipes.models import (
     Recipe,
     ShoppingCart,
     Tag,
-    TagRecipe,
 )
-
-
-class RecipeAdminForm(forms.ModelForm):
-    class Meta:
-        model = Recipe
-        fields = "__all__"
-
-    def clean(self):
-        forms_data = self.data
-        if (forms_data["ingredient_list-0-ingredient"] != "") and (
-            forms_data["tagrecipe_set-0-tag"] != ""
-        ):
-            return
-        else:
-            raise ValidationError(_("Укажите хотя бы один ингредиент и тег!"))
 
 
 class IngredientRecipeInline(admin.TabularInline):
@@ -36,16 +17,15 @@ class IngredientRecipeInline(admin.TabularInline):
     min_num = 1
 
 
-class TagRecipeInline(admin.TabularInline):
-    model = TagRecipe
-    min_num = 1
-
-
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    form = RecipeAdminForm
-    inlines = (IngredientRecipeInline, TagRecipeInline)
-    list_display = ("name", "id", "author", "favorites_added_count")
+    inlines = (IngredientRecipeInline,)
+    list_display = ("name",
+                    "id",
+                    "author",
+                    "favorites_added_count",
+                    "ingredients_list",
+                    )
     readonly_fields = ("favorites_added_count",)
     list_filter = (
         "author",
@@ -57,6 +37,10 @@ class RecipeAdmin(admin.ModelAdmin):
     @display(description="число добавлений в избранное")
     def favorites_added_count(self, obj):
         return obj.favorite.count()
+
+    @display(description="ингредиенты")
+    def ingredients_list(self, obj):
+        return [ingredient.name for ingredient in obj.ingredients.all()]
 
 
 @admin.register(Ingredient)

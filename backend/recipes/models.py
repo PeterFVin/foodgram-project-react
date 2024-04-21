@@ -1,23 +1,23 @@
 from colorfield.fields import ColorField
-
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from recipes.constants import (
-    max_length_common,
-    max_cooking_time,
-    min_cooking_time,
-    max_amount,
-    min_amount,
+    MAX_AMOUNT,
+    MIN_AMOUNT,
+    MAX_COOKING_TIME,
+    MIN_COOKING_TIME,
+    MAX_LENGTH_COMMON,
 )
 from users.models import User
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=max_length_common,
-                            verbose_name="название")
+    name = models.CharField(
+        max_length=MAX_LENGTH_COMMON,
+        verbose_name="название")
     measurement_unit = models.CharField(
-        max_length=max_length_common,
+        max_length=MAX_LENGTH_COMMON,
         verbose_name="единица измерения",
     )
 
@@ -38,7 +38,9 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(
-        max_length=max_length_common, unique=True, verbose_name="тег",
+        max_length=MAX_LENGTH_COMMON,
+        unique=True,
+        verbose_name="тег",
     )
     color = ColorField(
         unique=True,
@@ -46,7 +48,9 @@ class Tag(models.Model):
         verbose_name="цвет",
     )
     slug = models.SlugField(
-        max_length=max_length_common, unique=True, verbose_name="slug",
+        max_length=MAX_LENGTH_COMMON,
+        unique=True,
+        verbose_name="slug",
     )
 
     class Meta:
@@ -58,11 +62,13 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=max_length_common,
-                            verbose_name="рецепт")
+    name = models.CharField(
+        max_length=MAX_LENGTH_COMMON,
+        verbose_name="рецепт")
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name="recipes",
         verbose_name="создатель рецепта",
     )
     image = models.ImageField(
@@ -82,22 +88,21 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
-        through="TagRecipe",
         related_name="recipes",
         verbose_name="теги",
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name="время приготовления",
-        validators=[
+        validators=(
             MinValueValidator(
-                min_cooking_time,
-                message=f"Минимальное значение {min_cooking_time}!",
+                MIN_COOKING_TIME,
+                message=f"Минимальное значение {MIN_COOKING_TIME}!",
             ),
             MaxValueValidator(
-                max_cooking_time,
-                message=f"Максимальное значение {max_cooking_time}!",
+                MAX_COOKING_TIME,
+                message=f"Максимальное значение {MAX_COOKING_TIME}!",
             ),
-        ],
+        ),
     )
 
     class Meta:
@@ -125,12 +130,12 @@ class IngredientRecipe(models.Model):
         verbose_name="количество",
         validators=(
             MaxValueValidator(
-                max_amount,
-                message=f"Максимальное значение {max_amount}!",
+                MAX_AMOUNT,
+                message=f"Максимальное значение {MAX_AMOUNT}!",
             ),
             MinValueValidator(
-                min_amount,
-                message=f"Минимальное значение {min_amount}!",
+                MIN_AMOUNT,
+                message=f"Минимальное значение {MIN_AMOUNT}!",
             ),
         ),
     )
@@ -144,24 +149,7 @@ class IngredientRecipe(models.Model):
         return f"{self.recipe} {self.ingredient}"
 
 
-class TagRecipe(models.Model):
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        verbose_name="рецепт",
-    )
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name="тег")
-
-    class Meta:
-        verbose_name = "тег в рецепте"
-        verbose_name_plural = "теги в рецепте"
-        ordering = ("recipe",)
-
-    def __str__(self):
-        return f"{self.recipe} {self.tag}"
-
-
-class AbstractModel(models.Model):
+class FavoriteShoppingCartModel(models.Model):
     """Абстрактная модель для Favorite и ShoppingCart."""
 
     user = models.ForeignKey(
@@ -174,7 +162,7 @@ class AbstractModel(models.Model):
         abstract = True
 
 
-class Favorite(AbstractModel):
+class Favorite(FavoriteShoppingCartModel):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -196,7 +184,7 @@ class Favorite(AbstractModel):
         return f"Рецепт {self.recipe} в избранном у {self.user}"
 
 
-class ShoppingCart(AbstractModel):
+class ShoppingCart(FavoriteShoppingCartModel):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,

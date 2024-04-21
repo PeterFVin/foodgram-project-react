@@ -1,5 +1,5 @@
-max_amount = 9999
-min_amount = 1
-max_cooking_time = 720
-min_cooking_time = 1
-max_length_common = 200
+MAX_AMOUNT = 32767
+MIN_AMOUNT = 1
+MAX_COOKING_TIME = 32767
+MIN_COOKING_TIME = 1
+MAX_LENGTH_COMMON = 200
