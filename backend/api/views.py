@@ -55,6 +55,11 @@ class UserViewSet(UserViewSet):
     def subscribe(self, request, id):
         user = request.user
         author = get_object_or_404(User, id=id)
+        if user == author:
+            return Response(
+                {'errors': 'Нельзя подписаться на самого себя'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         serializer = SubscribeWriteSerializer(
             author,
             data=request.data,
